@@ -1,26 +1,16 @@
 const gulp = require('gulp')
-const standard = require('gulp-standard')
 const rename = require('gulp-rename')
 const uglify = require('gulp-uglify')
 const license = require('gulp-header-license')
 const fs = require('fs')
 const year = (new Date()).getFullYear()
 
-gulp.task('lint', function () {
-  return gulp
-    .src('fingerprint2.js')
-    .pipe(standard())
-    .pipe(standard.reporter('default', {
-      breakOnError: true,
-      quiet: true
-    }))
-})
-
 gulp.task('minify', function () {
   return gulp
       .src('fingerprint2.js')
       .pipe(rename({suffix: '.min'}))
       .pipe(uglify({
+        ie8: true,
         compress: {
           global_defs: {}
         },
@@ -34,4 +24,4 @@ gulp.task('minify', function () {
       .pipe(gulp.dest('dist/'))
 })
 
-gulp.task('default', ['lint', 'minify'], function () {})
+gulp.task('default', gulp.series('minify', function (done) { done() }))
